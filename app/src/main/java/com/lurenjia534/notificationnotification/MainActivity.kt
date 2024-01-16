@@ -3,7 +3,6 @@ package com.lurenjia534.notificationnotification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,21 +16,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -113,12 +107,12 @@ fun AppUI(){
                .height(100.dp)) {
                Row {
                    Spacer(modifier = Modifier.width(45.dp))
-                   Text(text = "👏 Welcome back Cno!", fontSize = 25.sp, fontWeight = FontWeight.Bold, )
+                   Text(text = "👏 Welcome back Cno!", fontSize = 25.sp, fontWeight = FontWeight.Bold )
                }
                Spacer(modifier = Modifier.height(25.dp))
                Row {
                    Spacer(modifier = Modifier.width(75.dp))
-                   Text(text = "❤ Is everything okay? Right!", fontSize = 15.sp, fontWeight = FontWeight.Light, )
+                   Text(text = "❤ Is everything okay? Right!", fontSize = 15.sp, fontWeight = FontWeight.Light )
                }
            }
            Spacer(modifier = Modifier.height(50.dp))
@@ -139,13 +133,13 @@ fun AppUI(){
                    )
                }
                Spacer(modifier = Modifier.height(50.dp))
-               Row() {
+               Row {
                   Spacer(modifier = Modifier.width(130.dp))
                    val context = LocalContext.current
                    Button(onClick = {
                        sendNotification(context,text.text)
                    }) {
-                       Icon(imageVector = Icons.Default.Send, contentDescription = null)
+                       Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
                        Spacer(modifier = Modifier
                            .width(5.dp)
                            .height(10.dp))
