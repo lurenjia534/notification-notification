@@ -1,8 +1,11 @@
 package com.lurenjia534.notificationnotification
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -64,7 +67,26 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// class NotificationReceiver :
+
+fun saveNotification(context: Context,title: String,message: String){
+    val sharedPreferences = context.getSharedPreferences("NotificationPrefs",Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("title",title)
+    editor.putString("message",message)
+    editor.apply()
+}
 fun sendNotification(context: Context, message: String,title: String) {
+
+    saveNotification(context, title, message)
+
+    val deleteIntent = PendingIntent.getBroadcast(
+        context,
+        0,
+        Intent(context,NotificationReceiver::class.java),
+        PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
     val notificationManager = ContextCompat.getSystemService(
         context, NotificationManager::class.java
     ) as NotificationManager
@@ -84,12 +106,12 @@ fun sendNotification(context: Context, message: String,title: String) {
         .setSmallIcon(R.drawable.ic_launcher_foreground) // 设置通知图标
         .setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
         .setOngoing(true) // 使通知成为持久性通知
+        .setDeleteIntent(deleteIntent)
         .build()
 
     // 显示通知
     notificationManager.notify(1001, notification)
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
