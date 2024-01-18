@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun sendNotification(context: Context, message: String) {
+fun sendNotification(context: Context, message: String,title: String) {
     val notificationManager = ContextCompat.getSystemService(
         context, NotificationManager::class.java
     ) as NotificationManager
@@ -81,7 +81,7 @@ fun sendNotification(context: Context, message: String) {
 
     // 构建通知
     val notification = NotificationCompat.Builder(context, channelId)
-        .setContentTitle("Cno Notice Memo")
+        .setContentTitle(title)
         .setContentText(message)
         .setSmallIcon(R.drawable.ic_launcher_foreground) // 设置通知图标
         .setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
@@ -153,7 +153,7 @@ fun AppUI(){
                   Spacer(modifier = Modifier.width(130.dp))
                    val context = LocalContext.current
                    Button(onClick = {
-                       sendNotification(context,text.text)
+                       sendNotification(context,text2.text,text.text)
                    }) {
                        Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
                        Spacer(modifier = Modifier
