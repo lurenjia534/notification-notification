@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -67,7 +68,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// class NotificationReceiver :
+class NotificationReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        // 从 SharedPreferences 获取之前的通知内容
+        val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
+        val title = sharedPreferences.getString("title", null)
+        val message = sharedPreferences.getString("message", null)
+
+        if (  title != null && message != null){
+            sendNotification(context, message, title)
+        }
+
+    }
+}
 
 fun saveNotification(context: Context,title: String,message: String){
     val sharedPreferences = context.getSharedPreferences("NotificationPrefs",Context.MODE_PRIVATE)
@@ -84,7 +97,7 @@ fun sendNotification(context: Context, message: String,title: String) {
         context,
         0,
         Intent(context,NotificationReceiver::class.java),
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     val notificationManager = ContextCompat.getSystemService(
