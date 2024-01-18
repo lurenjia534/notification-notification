@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -124,6 +127,18 @@ fun AppUI(){
                Row {
                    Spacer(modifier = Modifier.width(50.dp))
                    OutlinedTextField(value = text, onValueChange = { newText -> text = newText },
+                       label = { Text("message header") },
+                       leadingIcon = { Icon(imageVector = Icons.Outlined.Create, contentDescription = null )},
+                       colors = TextFieldDefaults.outlinedTextFieldColors(
+                           focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
+                           unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
+                       )
+                   )
+               }
+               Spacer(modifier = Modifier.height(15.dp))
+               Row {
+                   Spacer(modifier = Modifier.width(50.dp))
+                   OutlinedTextField(value = text, onValueChange = { newText -> text = newText },
                        label = { Text("notification")},
                        leadingIcon = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null) },
                        colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -132,7 +147,7 @@ fun AppUI(){
                        )
                    )
                }
-               Spacer(modifier = Modifier.height(50.dp))
+               Spacer(modifier = Modifier.height(20.dp))
                Row {
                   Spacer(modifier = Modifier.width(130.dp))
                    val context = LocalContext.current
