@@ -120,13 +120,14 @@ fun AppUI(){
            }
            Spacer(modifier = Modifier.height(50.dp))
            var text by remember { mutableStateOf(TextFieldValue("")) }
+           var text2 by remember { mutableStateOf(TextFieldValue("")) }
            OutlinedCard(modifier = Modifier
                .height(280.dp)
                .width(380.dp), colors = CardDefaults.outlinedCardColors()) {
                Spacer(modifier = Modifier.height(50.dp))
                Row {
                    Spacer(modifier = Modifier.width(50.dp))
-                   OutlinedTextField(value = text, onValueChange = { newText -> text = newText },
+                   OutlinedTextField(value = text2, onValueChange = { newText -> text2 = newText },
                        label = { Text("message header") },
                        leadingIcon = { Icon(imageVector = Icons.Outlined.Create, contentDescription = null )},
                        colors = TextFieldDefaults.outlinedTextFieldColors(
