@@ -151,7 +151,7 @@ fun AppUI(){
                   Spacer(modifier = Modifier.width(130.dp))
                    val context = LocalContext.current
                    Button(onClick = {
-                       sendNotification(context,text2.text,text.text)
+                       sendNotification(context,text.text,text2.text)
                    }) {
                        Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
                        Spacer(modifier = Modifier
