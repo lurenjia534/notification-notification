@@ -10,11 +10,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -70,32 +74,34 @@ class MainActivity : ComponentActivity() {
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         // 从 SharedPreferences 获取之前的通知内容
-        val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
         val title = sharedPreferences.getString("title", null)
         val message = sharedPreferences.getString("message", null)
 
-        if (  title != null && message != null){
+        if (title != null && message != null) {
             sendNotification(context, message, title)
         }
 
     }
 }
 
-fun saveNotification(context: Context,title: String,message: String){
-    val sharedPreferences = context.getSharedPreferences("NotificationPrefs",Context.MODE_PRIVATE)
+fun saveNotification(context: Context, title: String, message: String) {
+    val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
-    editor.putString("title",title)
-    editor.putString("message",message)
+    editor.putString("title", title)
+    editor.putString("message", message)
     editor.apply()
 }
-fun sendNotification(context: Context, message: String,title: String) {
+
+fun sendNotification(context: Context, message: String, title: String) {
 
     saveNotification(context, title, message)
 
     val deleteIntent = PendingIntent.getBroadcast(
         context,
         0,
-        Intent(context,NotificationReceiver::class.java),
+        Intent(context, NotificationReceiver::class.java),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
@@ -128,7 +134,7 @@ fun sendNotification(context: Context, message: String,title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun AppUI(){
+fun AppUI() {
 
 
     Column(
@@ -136,65 +142,90 @@ fun AppUI(){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-       Column {
-           OutlinedCard(modifier = Modifier
-               .width(380.dp)
-               .height(100.dp)) {
-               Row {
-                   Spacer(modifier = Modifier.width(45.dp))
-                   Text(text = "👏 Welcome back Cno!", fontSize = 25.sp, fontWeight = FontWeight.Bold )
-               }
-               Spacer(modifier = Modifier.height(25.dp))
-               Row {
-                   Spacer(modifier = Modifier.width(75.dp))
-                   Text(text = "❤ Is everything okay? Right!", fontSize = 15.sp, fontWeight = FontWeight.Light )
-               }
-           }
-           Spacer(modifier = Modifier.height(50.dp))
-           var text by remember { mutableStateOf(TextFieldValue("")) }
-           var text2 by remember { mutableStateOf(TextFieldValue("")) }
-           OutlinedCard(modifier = Modifier
-               .height(280.dp)
-               .width(380.dp), colors = CardDefaults.outlinedCardColors()) {
-               Spacer(modifier = Modifier.height(50.dp))
-               Row {
-                   Spacer(modifier = Modifier.width(50.dp))
-                   OutlinedTextField(value = text2, onValueChange = { newText -> text2 = newText },
-                       label = { Text("message header") },
-                       leadingIcon = { Icon(imageVector = Icons.Outlined.Create, contentDescription = null )},
-                       colors = TextFieldDefaults.outlinedTextFieldColors(
-                           focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
-                           unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
-                       )
-                   )
-               }
-               Spacer(modifier = Modifier.height(15.dp))
-               Row {
-                   Spacer(modifier = Modifier.width(50.dp))
-                   OutlinedTextField(value = text, onValueChange = { newText -> text = newText },
-                       label = { Text("notification")},
-                       leadingIcon = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null) },
-                       colors = TextFieldDefaults.outlinedTextFieldColors(
-                           focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
-                           unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
-                       )
-                   )
-               }
-               Spacer(modifier = Modifier.height(20.dp))
-               Row {
-                  Spacer(modifier = Modifier.width(130.dp))
-                   val context = LocalContext.current
-                   Button(onClick = {
-                       sendNotification(context,text.text,text2.text)
-                   }) {
-                       Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = null)
-                       Spacer(modifier = Modifier
-                           .width(5.dp)
-                           .height(10.dp))
-                       Text(text = "Send!", fontWeight = FontWeight.Bold)
-                   }
-               }
-           }
-       }
+        Column {
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                // .fillMaxHeight(0.9f)
+            ) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        Text(
+                            text = "👏 Welcome back Cno!",
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = "❤ Is everything okay? Right!",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Light
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(50.dp))
+            var text by remember { mutableStateOf(TextFieldValue("")) }
+            var text2 by remember { mutableStateOf(TextFieldValue("")) }
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxHeight(0.8f)
+                    .fillMaxWidth(0.9f), colors = CardDefaults.outlinedCardColors()
+            ) {
+                Spacer(modifier = Modifier.height(50.dp))
+                Row {
+                    Spacer(modifier = Modifier.width(50.dp))
+                    OutlinedTextField(
+                        value = text2, onValueChange = { newText -> text2 = newText },
+                        label = { Text("message header") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Create,
+                                contentDescription = null
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
+                            unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row {
+                    Spacer(modifier = Modifier.width(50.dp))
+                    OutlinedTextField(
+                        value = text, onValueChange = { newText -> text = newText },
+                        label = { Text("notification") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = null
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
+                            unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Row {
+                    Spacer(modifier = Modifier.width(130.dp))
+                    val context = LocalContext.current
+                    Button(onClick = {
+                        sendNotification(context, text.text, text2.text)
+                    },
+                 modifier = Modifier.padding(bottom = 10.dp)) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = null
+                )
+                Text(text = "Send!", fontWeight = FontWeight.Bold)
+            }
+            }
+        }
     }
+}
 }
