@@ -53,6 +53,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.lurenjia534.notificationnotification.ui.theme.NotificationNotificationTheme
+import android.provider.Settings
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +68,21 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onBackground
                 ) {
                     AppUI()
                 }
             }
         }
     }
+}
+
+fun openAppSystemSettings(context: Context) {
+    val intent = Intent().apply {
+        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    }
+    context.startActivity(intent)
 }
 
 class NotificationReceiver : BroadcastReceiver() {
@@ -135,97 +149,91 @@ fun sendNotification(context: Context, message: String, title: String) {
 @Composable
 @Preview
 fun AppUI() {
-
+    val context = LocalContext.current
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var text2 by remember { mutableStateOf(TextFieldValue("")) }
 
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column {
-            OutlinedCard(
+        OutlinedCard(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                // .fillMaxHeight(0.9f)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                        Text(
-                            text = "👏 Welcome back Cno!",
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Notice",
+                        style = TextStyle(
                             fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(
-                            text = "❤ Is everything okay? Right!",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Light
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(50.dp))
-            var text by remember { mutableStateOf(TextFieldValue("")) }
-            var text2 by remember { mutableStateOf(TextFieldValue("")) }
-            OutlinedCard(
-                modifier = Modifier
-                    .fillMaxHeight(0.8f)
-                    .fillMaxWidth(0.9f), colors = CardDefaults.outlinedCardColors()
-            ) {
-                Spacer(modifier = Modifier.height(50.dp))
-                Row {
-                    Spacer(modifier = Modifier.width(50.dp))
-                    OutlinedTextField(
-                        value = text2, onValueChange = { newText -> text2 = newText },
-                        label = { Text("message header") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Outlined.Create,
-                                contentDescription = null
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
-                            unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
-                        )
-                    )
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                Row {
-                    Spacer(modifier = Modifier.width(50.dp))
-                    OutlinedTextField(
-                        value = text, onValueChange = { newText -> text = newText },
-                        label = { Text("notification") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = null
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Gray, // 获得焦点时的边框颜色
-                            unfocusedBorderColor = Color.Gray // 未获得焦点时的边框颜色
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Serif
                         )
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
-                Row {
-                    Spacer(modifier = Modifier.width(130.dp))
-                    val context = LocalContext.current
-                    Button(onClick = {
+                OutlinedTextField(
+                    value = text2,
+                    onValueChange = { newText -> text2 = newText },
+                    label = { Text("Message Header") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Create,
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { newText -> text = newText },
+                    label = { Text("Notification") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = null
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.Gray
+                    )
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(
+                    onClick = {
                         sendNotification(context, text.text, text2.text)
                     },
-                 modifier = Modifier.padding(bottom = 10.dp)) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = null
-                )
-                Text(text = "Send!", fontWeight = FontWeight.Bold)
-            }
+                    modifier = Modifier.padding(bottom = 10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = null
+                    )
+                    Text(text = "Send!", fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(onClick = {
+                    openAppSystemSettings(context)
+                }) {
+                    Text("Enable Notifications")
+                }
             }
         }
     }
-}
 }
