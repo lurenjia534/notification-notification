@@ -112,6 +112,14 @@ fun sendNotification(context: Context, message: String, title: String) {
 
     saveNotification(context, title, message)
 
+    val intent = Intent(context,MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+
+    val pendingIntent = PendingIntent.getActivity(
+        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
     val deleteIntent = PendingIntent.getBroadcast(
         context,
         0,
@@ -139,6 +147,7 @@ fun sendNotification(context: Context, message: String, title: String) {
         .setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
         .setOngoing(true) // 使通知成为持久性通知
         .setDeleteIntent(deleteIntent)
+        .setContentIntent(pendingIntent)
         .build()
 
     // 显示通知
