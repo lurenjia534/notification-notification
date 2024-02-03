@@ -94,53 +94,43 @@ class NotificationReceiver : BroadcastReceiver() {
 }
 
 fun saveNotification(context: Context, title: String, message: String) {
-    val sharedPreferences = context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    editor.putString("title", title)
-    editor.putString("message", message)
-    editor.apply()
+    with(context.getSharedPreferences("NotificationPrefs", Context.MODE_PRIVATE).edit()) {
+        putString("title", title)
+        putString("message", message)
+        apply()
+    }
 }
 
 fun sendNotification(context: Context, message: String, title: String) {
 
     saveNotification(context, title, message)
 
-    val intent = Intent(context,MainActivity::class.java).apply {
+    val intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
 
-    val pendingIntent = PendingIntent.getActivity(
-        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    val deleteIntent = PendingIntent.getBroadcast(context, 0, Intent(context, NotificationReceiver::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-    val deleteIntent = PendingIntent.getBroadcast(
-        context,
-        0,
-        Intent(context, NotificationReceiver::class.java),
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    val notificationManager = ContextCompat.getSystemService(
-        context, NotificationManager::class.java
-    ) as NotificationManager
+    val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java) as NotificationManager
 
     // 创建一个通知通道（在 Android Oreo 及以上版本中必须这样做）
     val channelId = "Notice_Memo"
     val channelName = "cno_Notice_Memo"
-    val channel = NotificationChannel(
-        channelId, channelName, NotificationManager.IMPORTANCE_HIGH
-    )
+    val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
     notificationManager.createNotificationChannel(channel)
 
     // 构建通知
     val notification = NotificationCompat.Builder(context, channelId)
-        .setContentTitle(title)
-        .setContentText(message)
-        .setSmallIcon(R.drawable.ic_launcher_foreground) // 设置通知图标
-        .setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
-        .setOngoing(true) // 使通知成为持久性通知
-        .setDeleteIntent(deleteIntent)
-        .setContentIntent(pendingIntent)
+        .apply {
+            setContentTitle(title)
+            setContentText(message)
+            setSmallIcon(R.drawable.ic_launcher_foreground) // 设置通知图标
+            setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
+            setOngoing(true) // 使通知成为持久性通知
+            setDeleteIntent(deleteIntent)
+            setContentIntent(pendingIntent)
+        }
         .build()
 
     // 显示通知
