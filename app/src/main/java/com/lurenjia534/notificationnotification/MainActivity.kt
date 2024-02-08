@@ -124,7 +124,7 @@ fun sendNotification(context: Context, message: String, title: String) {
         .apply {
             setContentTitle(title)
             setContentText(message)
-            setSmallIcon(R.drawable.ic_launcher_foreground) // 设置通知图标
+            setSmallIcon(R.drawable.notifications_24) // 设置通知图标
             setPriority(NotificationCompat.PRIORITY_HIGH) // 设置优先级
             setOngoing(true) // 使通知成为持久性通知
             setDeleteIntent(deleteIntent)
